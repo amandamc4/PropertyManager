@@ -1,0 +1,239 @@
+﻿
+<html>
+<head>
+    <title>Unit Add</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script>
+    function check(e,value){
+        var unicode=e.charCode? e.charCode : e.keyCode;
+        if (value.indexOf(".") != -1)if( unicode == 46 )return false;
+        if (unicode!=8)if((unicode<48||unicode>57))return false;
+    }
+
+    function checkDigit(e, value) {
+        var unicode = e.charCode ? e.charCode : e.keyCode;
+        if (value.indexOf(".") != -1) if (unicode == 46) return false;
+        if (unicode != 8) if ((unicode < 48 || unicode > 57) && unicode != 46) return false;
+    }
+
+    function checkLength(len, ele) {
+        var fieldLength = ele.value.length;
+        if (fieldLength <= len) {
+            return true;
+        }
+        else {
+            var str = ele.value;
+            str = str.substring(0, str.length - 1);
+            ele.value = str;
+        }
+    }
+   </script>
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper-form">
+
+        <!--ADD FORM-->
+        <div ng-hide="isEdit">
+            <div class="form-style-5" ng-hide="showConfirmation">
+                <form name="form" id="form">
+                    <fieldset>
+                        <legend><span><i class="fa fa-home" aria-hidden="true"></i></span> Add Unit <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="bedrooms">Bedrooms*</label>
+                        <input type="number" name="bedrooms" id="bedrooms" ng-model="modelAdd.bedrooms" ng-pattern="/^\d{1,2}$/" class="form-control" required onKeyPress="return check(event,value)" onInput="checkLength(2,this)" >
+                        <span class="spanError" ng-show="form.bedrooms.$error.pattern || form.bedrooms.$invalid && !form.bedrooms.$pristine">Number of bedrooms is required</span>
+
+                        <label class="control-label" for="bathrooms">Bathrooms*</label>
+                        <input type="number" name="bathrooms" id="bathrooms" ng-model="modelAdd.bathrooms" ng-pattern="/^\d{1,2}$/" class="form-control" required onKeyPress="return check(event,value)" onInput="checkLength(2,this)" >
+                        <span class="spanError" ng-show="form.bathrooms.$error.pattern || form.bathrooms.$invalid && !form.bathrooms.$pristine">Number of bathrooms is required</span>
+
+                        <label class="control-label" for="squareft">Square Feet*</label>
+                        <input type="number" name="squareft" id="squareft" step=0.01 ng-model="modelAdd.squareFt" max="1000" ng-pattern="/^([0-9]+.[0-9]{0,2})$/" class="form-control" required onKeyPress="return checkDigit(event,value)">
+                        <span class="spanError" ng-show="form.squareft.$error.pattern && !form.squareft.$pristine">Enter a valid number</span>
+                        <span class="spanError" ng-show="form.squareft.$error.required && !form.squareft.$pristine">Square feet is required</span>
+
+                        <label class="control-label" for="maxOccupants">Max Occupants</label>
+                        <input type="number" name="maxOccupants" id="maxOccupants" ng-model="modelAdd.maxOccupants" ng-pattern="/^\d{1,2}$/" class="form-control" onKeyPress="return check(event,value)" onInput="checkLength(2,this)" >
+                        <span class="spanError" ng-show="form.maxOccupants.$error.pattern || form.maxOccupants.$invalid && !form.maxOccupants.$pristine">Enter a valid number</span>
+
+                        <label class="control-label" for="balcony">Balcony</label>
+                        <select ng-model="modelAdd.balcony" name="balcony" id="balcony" required>
+                            <option value=true>Yes</option>
+                            <option value=false>No</option>
+                        </select>
+                        <br/><span class="spanError" ng-show="form.balcony.$error.required && !form.balcony.$pristine">Enter balcony</span>
+
+                        <label class="control-label" for="laundry">Laundry</label>
+                        <select ng-model="modelAdd.laundry" name="laundry" id="laundry" required>
+                            <option value=true>Yes</option>
+                            <option value=false>No</option>
+                        </select>
+                        <br/><span class="spanError" ng-show="form.laundry.$error.required && !form.laundry.$pristine">Enter laundry</span>
+
+                        <label class="control-label" for="dishwasher">Dishwasher</label>
+                        <select ng-model="modelAdd.dishwasher" name="dishwasher" id="dishwasher" required>
+                            <option value=true>Yes</option>
+                            <option value=false>No</option>
+                        </select>
+                       <br/> <span class="spanError" ng-show="form.dishwasher.$error.required && !form.dishwasher.$pristine">Enter dishwasher</span>
+
+                        <label class="control-label" for="dishwasher">Photo</label>
+                        <input type="file" upload-files style="margin-top: 25px;"/>
+                    </fieldset>
+                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary submitForm" ng-click="addUnit()">Add Unit </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Bedrooms:</div>
+                        <div class="detailDivTableCell">{{modelAdd.bedrooms}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Bathrooms:</div>
+                        <div class="detailDivTableCell">{{modelAdd.bathrooms}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">SquareFeet:</div>
+                        <div class="detailDivTableCell">{{modelAdd.squareFt}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Max Occupants:</div>
+                        <div class="detailDivTableCell">{{modelAdd.maxOccupants}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Balcony:</div>
+                        <div class="detailDivTableCell">{{modelAdd.balcony?'Yes':'No'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Dishwasher:</div>
+                        <div class="detailDivTableCell">{{modelAdd.dishwasher?'Yes':'No'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Laundry:</div>
+                        <div class="detailDivTableCell">{{modelAdd.laundry?'Yes':'No'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Photo:</div> <br/>
+                        <div class="detailDivTableCell" ng-show="photomodel.PathName!=''"><img src="{{photomodel.PathName}}" width="100" height="100"  style="cursor: pointer" ng-click="openPic(photomodel.PathName);"/></div>
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                    <button type="button" class="btn btn-primary" ng-click="addAnother()">Add another</button>
+                </div>
+            </div>
+        </div>
+        <!--ADD FORM-->
+        <!--EDIT FORM-->
+        <div ng-show="isEdit">
+            <div class="form-style-5" ng-hide="showEditConfirmation">
+                <form name="formEdit" id="formEdit">
+                    <fieldset>
+                        <legend><span><i class="fa fa-home" aria-hidden="true"></i></span> Edit Unit <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="bedrooms">Bedrooms*</label>
+                        <input type="number" name="bedrooms" id="bedrooms" ng-model="modelEdit.bedrooms" ng-pattern="/^[0-9]{0,2}$/" class="form-control" required onKeyPress="return check(event,value)" onInput="checkLength(2,this)">
+                        <span class="spanError" ng-show="formEdit.bedrooms.$error.pattern || formEdit.bedrooms.$invalid && !formEdit.bedrooms.$pristine">Number of bedrooms is required</span>
+
+                        <label class="control-label" for="bathrooms">Bathrooms*</label>
+                        <input type="number" name="bathrooms" id="bathrooms" ng-model="modelEdit.bathrooms" ng-pattern="/^[0-9]{0,2}$/" class="form-control" required onKeyPress="return check(event,value)" onInput="checkLength(2,this)">
+                        <span class="spanError" ng-show="formEdit.bathrooms.$error.pattern || formEdit.bathrooms.$invalid && !formEdit.bathrooms.$pristine">Number of bathrooms is required</span>
+
+                        <label class="control-label" for="squareft">Square Feet*</label>
+                        <input type="number" name="squareft" id="squareft" step=0.01 ng-model="modelEdit.squareFt" ng-pattern="/^([0-9]+.[0-9]{0,2})$/" class="form-control" required onKeyPress="return checkDigit(event,value)">
+                        <span class="spanError" ng-show="formEdit.squareft.$error.pattern && !formEdit.squareft.$pristine">Enter a valid number</span>
+                        <span class="spanError" ng-show="formEdit.squareft.$error.required && !formEdit.squareft.$pristine">Square feet is required</span>
+
+                        <label class="control-label" for="maxOccupants">Max Occupants</label>
+                        <input type="number" name="maxOccupants" id="maxOccupants" ng-model="modelEdit.maxOccupants" ng-pattern="/^[0-9]{0,2}$/" class="form-control" onKeyPress="return check(event,value)" onInput="checkLength(2,this)">
+                        <span class="spanError" ng-show="formEdit.maxOccupants.$error.pattern || formEdit.maxOccupants.$invalid && !formEdit.maxOccupants.$pristine">Enter a valid number</span>
+
+                       <label class="control-label" for="balcony">Balcony</label>
+                        <select ng-model="modelEdit.balcony" name="balcony" id="balcony">
+                            <option value=true ng-selected="modelEdit.balcony">Yes</option>
+                            <option value=false ng-selected="modelEdit.balcony === false">No</option>
+                        </select>
+                        <br/><span class="spanError" ng-show="formEdit.balcony.$error.required && !formEdit.balcony.$pristine">Enter balcony</span>
+
+                      <label class="control-label" for="laundry">Laundry</label>
+                        <select ng-model="modelEdit.laundry" name="laundry" id="laundry">
+                            <option value=true ng-selected="modelEdit.laundry">Yes</option>
+                            <option value=false ng-selected="modelEdit.laundry === false">No</option>
+                        </select>
+                       <br/> <span class="spanError" ng-show="formEdit.laundry.$error.required && !formEdit.laundry.$pristine">Enter laundry</span>
+
+                        <label class="control-label" for="dishwasher">Dishwasher</label>
+                        <select ng-model="modelEdit.dishwasher" name="dishwasher" id="dishwasher">
+                            <option value=true ng-selected="modelEdit.dishwasher">Yes</option>
+                            <option value=false ng-selected="modelEdit.dishwasher === false">No</option>
+                        </select>
+                        <br/><span class="spanError" ng-show="formEdit.dishwasher.$error.required && !formEdit.dishwasher.$pristine">Enter dishwasher</span>
+                        
+                        <div class="detailDivTableRow" ng-show="modelEdit.PathName!=''">
+                            <div class="detailDivTableHeader">Photo:</div>
+                        </div>
+                        <div class="detailDivTableRow" ng-show="modelEdit.PathName!=''">
+                            <div class="detailDivTableCell"><img src="{{modelEdit.PathName}}" width="100" height="100" ng-click="openPic(photomodel.PathName);" /></div>
+                            <button type="button" class="btn btn-primary" ng-click="deletePicture(modelEdit.UnitPhotoId)">Remove photo</button>
+                        </div>
+                        <div>
+                            <label class="control-label" for="photo">Photo</label>
+                            <input type="file" upload-files style="margin-top: 25px;" />
+                        </div>
+                        
+                    </fieldset>
+                    <button type="submit" ng-disabled="formEdit.$invalid" class="btn btn-primary submitForm" ng-click="editUnit()">Edit Unit </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showEditConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Bedrooms:</div>
+                        <div class="detailDivTableCell">{{modelEdit.bedrooms}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Bathrooms:</div>
+                        <div class="detailDivTableCell">{{modelEdit.bathrooms}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">SquareFeet:</div>
+                        <div class="detailDivTableCell">{{modelEdit.squareFt}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Max Occupants:</div>
+                        <div class="detailDivTableCell">{{modelEdit.maxOccupants}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Balcony:</div>
+                        <div class="detailDivTableCell">{{modelEdit.balcony?'Yes':'No'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Dishwasher:</div>
+                        <div class="detailDivTableCell">{{modelEdit.dishwasher?'Yes':'No'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Laundry:</div>
+                        <div class="detailDivTableCell">{{modelEdit.laundry?'Yes':'No'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Photo:</div>
+                    </div>
+                    <div class="detailDivTableRow" ng-show="photomodelEdit.PathName!=''">
+                        <div class="detailDivTableCell"><img src="{{photomodelEdit.PathName}}" width="100" height="100" style="cursor: pointer" ng-click="openPic(photomodelEdit.PathName);" /></div>
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                </div>
+            </div>
+        </div>
+        <!--EDIT FORM-->
+
+    </div>
+</body>
+</html>

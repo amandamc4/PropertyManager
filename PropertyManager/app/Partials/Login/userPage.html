@@ -1,0 +1,92 @@
+﻿
+<html>
+<head>
+    <title>User Accounts</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper">
+        <form>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                    <input type="text" class="form-control" placeholder="Search" ng-model="searchUser">
+                </div>
+            </div>
+        </form>
+        <table class="table-fill" style="float: left">
+            <thead>
+                <tr>
+                    <th style="width: 2%"></th>
+                    <th class="text-left" style="width: 20%" ng-click="sortType = 'firstName'; sortReverse = !sortReverse">
+                        Fist Name
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'firstName' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'firstName' && sortReverse"></i></span>
+                    </th>
+                    <th class="text-left" style="width: 20%" ng-click="sortType = 'lastName'; sortReverse = !sortReverse">
+                        Last Name
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'lastName' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'lastName' && sortReverse"></i></span>
+                    </th>
+                    <th class="text-left" style="width: 20%" ng-click="sortType = 'email'; sortReverse = !sortReverse">
+                        Email
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'email' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'email' && sortReverse"></i></span>
+                    </th>
+                    <th class="text-left" style="width: 20%" ng-click="sortType = 'role'; sortReverse = !sortReverse">
+                        Role
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'role' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'role' && sortReverse"></i></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list-tbody" ng-repeat="user in users | orderBy:sortType:sortReverse | filter:searchUser" ng-class-odd="'list-row-odd'" ng-class-even="'list-row-even'">
+                <tr class="list-hover">
+                    <td>
+                        <i style="cursor: pointer" class="fa fa-minus" ng-if="user.expanded" ng-click="user.expanded = false;"></i>
+                        <i style="cursor: pointer" class="fa fa-plus" ng-if="!user.expanded" ng-click="user.expanded = true;"></i>
+                    </td>
+                    <td class="text-left">{{user.GivenName}}</td>
+                    <td class="text-left">{{user.Surname}}</td>
+                    <td class="text-left">{{user.UserName}}</td>
+                    <td class="text-left">{{user.Role}}</td>
+                </tr>
+                <!-- DETAIL VIEW-->
+                <tr class="details-row" ng-if="user.expanded" ng-repeat-end="">
+                    <td colspan="5">
+                        <div class="detailDivTable">
+                            <div class="detailDivTableBody detailLeft">
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Fist Name:</div>
+                                    <div class="detailDivTableCell">{{user.GivenName}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Last Name:</div>
+                                    <div class="detailDivTableCell">{{user.Surname}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Email:</div>
+                                    <div class="detailDivTableCell">{{user.UserName}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Role:</div>
+                                    <div class="detailDivTableCell">{{user.Role}}</div>
+                                </div>
+                                <span style="margin:10px;" class="spanError" ng-show="errorMessage!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{errorMessage}}</span>
+                            </div>
+                            <div class="detailRight">
+                                <button type="submit" ng-hide="user.Role=='Administrator'" class="btn btn-primary cancelAddButton" style="float: right;" ng-confirm-click="Are you sure to delete this record ?" confirmed-click="delete(user.UserName)" >Delete</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <!-- END DETAIL VIEW-->
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>

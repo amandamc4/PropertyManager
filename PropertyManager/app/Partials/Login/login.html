@@ -1,0 +1,80 @@
+﻿
+<script>
+    $('#password1').popover();
+
+</script>
+<head>
+    <title>Login </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div ng-hide="passForget" class="form-style-5">
+        <form name="form" id="formLogin">
+            <h1 id="formH1">Log In</h1>
+            <div class="form-group" ng-class="{'has-error': form.username.$dirty && (form.username.$invalid || form.username.$error.required)}">
+                <label class="control-label" for="username">Email: </label>
+                <input type="email" name="username" id="inputRegister" class="form-control" ng-model="userEmail" required maxlength="30">
+                <span ng-show="form.username.$invalid && !form.username.$pristine" class="help-block">Enter a valid email</span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
+                <label class="control-label" for="userPassword" id="password">Password:</label>
+                <input type="password" name="password" id="inputRegister" class="form-control" ng-model="userPassword" required>
+                <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+            </div>
+            <div class="form-actions">
+                <button type="submit"  ng-disabled="form.$invalid" class="btn btn-primary" ng-click="login()">Login</button>
+            </div>
+            <br />
+            <a href ng-click="forgetPassword()"> Forgot Password?</a>
+            <br /><br/><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true" ng-show="message!=''"></i>{{message}}</span>
+            <br /><br /><span class="messageSuccess" style="margin-top:20px;" ng-show="forgetMessage!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{forgetMessage}}</span>
+        </form>
+    </div>
+
+    <div ng-show="passForget" class="form-style-5">
+        <form name="formReset" id="formLogin">
+            <h1 id="formH1">Forget Password</h1>
+            <br />
+
+            <span>
+                <i class="fa fa-info" aria-hidden="true"></i> Please enter your email in the fields below.
+                <br /> You will receive an email with a temporary password. <br />
+                You can change the password after loggin in.
+            </span>
+
+            <div class="form-group" ng-class="{'has-error': formReset.username.$dirty && (formReset.username.$invalid || formReset.username.$error.required)}">
+                <label class="control-label" for="username">Email*: </label>
+                <input type="email" name="username" id="inputRegister" class="form-control" ng-model="userEmail" required maxlength="30"/>
+                <span ng-show="formReset.username.$invalid && !formReset.username.$pristine" class="help-block">Enter a valid email</span>
+            </div>
+            <!--<div class="form-group" ng-class="{'has-error': formReset.lastName.$dirty && formReset.lastName.$error.required && formReset.lastName.$invalid}">
+                <label class="control-label" for="lastName">Last Name: </label>
+                <input type="text" name="lastName" id="inputRegister" class="form-control" ng-model="userLastName" pattern="[A-Za-z]+" maxlength="30" title="Last name should only contain letters" required>
+                <span ng-show="formReset.lastName.$dirty && formReset.lastName.$error.required" class="help-block">Last name is required</span>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error': formReset.birthDate.$dirty && formReset.birthDate.$error.required }">
+                <label class="control-label" for="birthDate">Birth Date: </label>
+                <input type="date" name="birthDate" id="birthDate" class="form-control" ng-model="birthDate" style="width: 200px" required />
+                <span ng-show="formReset.birthDate.$dirty && formReset.birthDate.$error.required" class="help-block">Birth Date is required</span>
+            </div>
+            <div class="form-group" ng-class="{'has-error': formReset.resetPassword.$dirty && formReset.resetPassword.$error.required && formReset.resetPassword.$invalid}">
+                <label class="control-label" for="resetPassword">New Password: <i class="fa fa-exclamation-circle" toggle="popover" id="password1" data-trigger="hover" data-placement="bottom" data-content="Must contain at least 1 upper case, 1 lower case, 1 number and 1 special character. Minimum 8 characters" aria-hidden="true"></i></label>
+                <input type="password" name="resetPassword" id="inputRegister" class="form-control" ng-model="userResetPassword" ng-pattern="/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/" required>
+                <span ng-show="formReset.resetPassword.$dirty && formReset.resetPassword.$invalid" class="help-block">Enter a valid password</span>
+            </div>
+            <div class="form-group" ng-class="{'has-error': formReset.confirm_password.$dirty && formReset.confirm_password.$error.required && formReset.confirm_password.$invalid}">
+                <label class="control-label" for="confirm_password" id="confirm_password">Confirm Password:</label>
+                <input type="password" name="confirm_password" id="inputRegister" class="form-control" ng-model="confirmPassword" compare-to="userResetPassword" required />
+                <span ng-show="formReset.confirm_password.$dirty && formReset.confirm_password.$invalid" class="help-block">Enter a valid password</span>
+            </div>-->
+            <br />
+            <div class="form-actions">
+                <button type="submit" ng-disabled="formReset.$invalid" class="btn btn-primary" ng-click="forgetPasword()">Get Password</button><button type="submit" style="margin-left:10px; margin-top: 9px;" class="btn btn-primary cancelAddButton" ng-click="cancelReset()">Cancel</button>
+            </div>
+            <br /><span class="spanError" style="margin-top:20px;" ng-show="errorMessage!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{errorMessage}}</span>
+        </form>
+    </div>
+</body>

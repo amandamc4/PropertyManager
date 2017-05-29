@@ -1,0 +1,170 @@
+﻿
+<html>
+<head>
+    <title>Service Add</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        $('#phoneNumber').keyup(function () {
+            if ($(this).val() != null) {
+                foo = $(this).val().split("-").join("");
+
+                foo = foo.match(new RegExp('.{1,4}$|.{1,3}', 'g')).join("-");
+
+                $(this).val(foo);
+            }
+            
+        });
+
+        $('#phoneNumber2').keyup(function () {
+            if ($(this).val() != null) {
+                foo = $(this).val().split("-").join("");
+
+                foo = foo.match(new RegExp('.{1,4}$|.{1,3}', 'g')).join("-");
+
+                $(this).val(foo);
+            }
+
+        });
+
+        function check(e, value) {
+            var unicode = e.charCode ? e.charCode : e.keyCode;
+            if (value.indexOf(".") != -1) if (unicode == 46) return false;
+            if (unicode != 8) if ((unicode < 48 || unicode > 57) && unicode != 45) return false;
+        }
+    </script>
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper-form" ng-hide="addOne">
+
+        <!--ADD FORM-->
+        <div ng-hide="isEdit">
+            <div class="form-style-5" ng-hide="showConfirmation">
+                <form name="form" id="form">
+                    <fieldset>
+                        <legend><span><i class="fa fa-paint-brush" aria-hidden="true"></i></span> Add Service <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="name">Service Name*</label>
+                        <input type="text" name="name" id="name" ng-model="modelAdd.name" ng-pattern="/^[a-zA-Z\- ]+$/" class="form-control" maxlength="20" required>
+                        <span class="spanError" ng-show="form.name.$error.required && !form.name.$pristine">Service name is required</span>
+                        <span class="spanError" ng-show="form.name.$error.pattern && !form.name.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="companyName">Company Name*</label>
+                        <input type="text" name="companyName" id="companyName" ng-model="modelAdd.companyName" ng-pattern="/^[a-zA-Z\-\\.\x27 ]+$/" class="form-control" maxlength="20" required>
+                        <span class="spanError" ng-show="form.companyName.$error.required && !form.companyName.$pristine">Company name is required</span>
+                        <span class="spanError" ng-show="form.companyName.$error.pattern && !form.companyName.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="address">Company Address</label>
+                        <input type="text" name="address" id="address" ng-model="modelAdd.address"  class="form-control" ng-pattern="/^[a-zA-Z0-9\-\\.\x27 ]+$/" maxlength="70">
+                        <span class="spanError" ng-show="form.address.$error.pattern && !form.address.$pristine">Enter valid characters</span>
+                  
+                        <label class="control-label" for="email">Email</label>
+                        <input type="email" name="email" id="email" class="form-control" ng-model="modelAdd.email" maxlength="30"/>
+                        <span class="help-block spanError" ng-show="form.email.$error.pattern && !form.email.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="phone">Phone Number</label>
+                        <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" ng-model="modelAdd.phoneNumber" placeholder="numbers only" ng-pattern="/^[0-9]{3}[-]{1}[0-9]{3}[-]{1}[0-9]{4}$/" maxlength="12" onKeyPress="return check(event,value)"/>
+                        <span class="help-block spanError" ng-show="form.phoneNumber.$error.pattern  && !form.phoneNumber.$pristine" >Enter valid characters</span>
+                     
+                    </fieldset>
+                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary submitForm" ng-click="addService()">Add Service </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Service:</div>
+                        <div class="detailDivTableCell">{{modelAdd.name}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Company Name:</div>
+                        <div class="detailDivTableCell">{{modelAdd.companyName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Phone number:</div>
+                        <div class="detailDivTableCell">{{modelAdd.phoneNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Email:</div>
+                        <div class="detailDivTableCell">{{modelAdd.email}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Address:</div>
+                        <div class="detailDivTableCell">{{modelAdd.address}}</div>
+                    </div>                                   
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                    <button type="button" class="btn btn-primary" ng-click="addAnother()">Add another</button>
+                </div>
+            </div>
+        </div>
+        <!--ADD FORM-->
+        <!--EDIT FORM-->
+        <div ng-show="isEdit">
+            <div class="form-style-5" ng-hide="showEditConfirmation">
+                <form name="formEdit" id="formEdit">
+                    <fieldset>
+                        <legend><span><i class="fa fa-paint-brush" aria-hidden="true"></i></span> Edit Service <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="name">Service Name*</label>
+                        <input type="text" name="name" id="name" ng-model="modelEdit.name" ng-pattern="/^[a-zA-Z ]+$/" class="form-control" maxlength="20" required>
+                        <span class="spanError" ng-show="formEdit.name.$error.required && !formEdit.name.$pristine">Service name is required</span>
+                        <span class="spanError" ng-show="formEdit.name.$error.pattern && !formEdit.name.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="companyName">Company Name*</label>
+                        <input type="text" name="companyName" id="companyName" ng-model="modelEdit.companyName" ng-pattern="/^[a-zA-Z\-\\.\x27 ]+$/" class="form-control" maxlength="20" required>
+                        <span class="spanError" ng-show="formEdit.companyName.$error.required && !formEdit.companyName.$pristine">Company name is required</span>
+                        <span class="spanError" ng-show="formEdit.companyName.$error.pattern && !formEdit.companyName.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="address">Company Address</label>
+                        <input type="text" name="address" id="address" ng-model="modelEdit.address" class="form-control" ng-pattern="/^[a-zA-Z0-9\-\\.\x27 ]+$/" maxlength="70">
+                        <span class="spanError" ng-show="formEdit.address.$error.pattern && !formEdit.address.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="email">Email</label>
+                        <input type="email" name="email" id="email" class="form-control" ng-model="modelEdit.email" maxlength="30" />
+                        <span class="spanError" ng-show="formEdit.email.$error.pattern && !formEdit.email.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="phone">Phone Number</label>
+                        <input type="text" name="phoneNumber2" id="phoneNumber2" class="form-control" ng-model="modelEdit.phoneNumber" placeholder="numbers only" ng-pattern="/^[0-9]{3}[-]{1}[0-9]{3}[-]{1}[0-9]{4}$/" maxlength="12" onKeyPress="return check(event,value)" />
+                        <span class="spanError" ng-show="formEdit.phoneNumber2.$error.pattern && !formEdit.phoneNumber2.$pristine">Enter valid characters</span>
+                    </fieldset>
+                    <button type="submit" ng-disabled="formEdit.$invalid" class="btn btn-primary submitForm" ng-click="editService()">Edit Service </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showEditConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Service:</div>
+                        <div class="detailDivTableCell">{{modelEdit.name}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Company Name:</div>
+                        <div class="detailDivTableCell">{{modelEdit.companyName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Phone number:</div>
+                        <div class="detailDivTableCell">{{modelEdit.phoneNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Email:</div>
+                        <div class="detailDivTableCell">{{modelEdit.email}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Address:</div>
+                        <div class="detailDivTableCell">{{modelEdit.address}}</div>
+                    </div>                                   
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                </div>
+            </div>
+        </div>
+        <!--EDIT FORM-->
+
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,167 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <meta charset="utf-8" />
+</head>
+<body ng-app="propertyManagerApp">     
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper" style="max-width: 1136px;">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header" style="margin-top: 0px;">Dashboard</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-users fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge" ng-controller="tenantController">{{tenants.length}}</div>
+                                <div>Tenants</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#/tenant">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                 <div class="panel panel-lightblue">
+                     <div class="panel-heading">
+                         <div class="row">
+                             <div class="col-xs-3">
+                                 <i class="fa fa-address-book fa-5x"></i>
+                             </div>
+                             <div class="col-xs-9 text-right">
+                                 <div class="huge" ng-controller="employeeController">{{employees.length}}</div>
+                                 <div>Employees</div>
+                             </div>
+                         </div>
+                     </div>
+                     <a href="#/employee">
+                         <div class="panel-footer">
+                             <span class="pull-left">View Details</span>
+                             <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                             <div class="clearfix"></div>
+                         </div>
+                     </a>
+                 </div>
+             </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-lightblue">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-paint-brush fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge" ng-controller="serviceRequestController">{{activeRequests}}</div>
+                                <div>Service Requests</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#/servicerequest">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-lightblue">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-wrench fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right" ng-controller="workOrderManagerController">
+                                <div class="huge">{{activeWorkOrders}}</div>
+                                <div>Work Order Requests</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#/workorderrequestmanager">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12" style="height: 300px; overflow: scroll;">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="font-size: 20px;">
+                        Announcements
+                    </div>
+                    <!-- .panel-heading -->
+                    <div class="panel-body">
+                        <div class="panel-group" id="accordion" ng-controller="announcementController">
+                            <div class="panel panel-default" ng-repeat="announce in announces | orderBy:announce.ExpireDate : true">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        {{announce.Title}}
+                                    </h4>
+                                </div>
+                                <div>
+                                    <div class="panel-body">
+                                        {{announce.Description}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-8" style="width: 50%;">
+                <h1 class="page-header" style="margin-top: 0px; float: left;">Events</h1>
+            </div>
+            <div class="col-md-8" style="width: 50%;">
+                <h1 class="page-header" style="margin-top: 0px; float: left;">Apartment Vacancies</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <div class="row" ng-controller="homeController">
+            <div class="col-md-8" style="width: 50%; float: left;">
+                <div id="calendar" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="myCalendar"></div>
+            </div>
+            <div>
+                <div class="col-md-8" style="width: 50%; float: left" ng-controller="apartmentController">
+                    <canvas class="chart chart-doughnut" id="doughnut" chart-data="data" chart-labels="labels" chart-colors="colors" chart-options="options"></canvas>
+                </div>
+                <div class="col-md-4">
+                    <div ng-show="SelectedEvent" class="alert alert-success" style="margin-top:50px; width:60%">
+                        <p style="margin-top:0px"><b>Selected Event:</b></p>
+                        <p style="color:#A9A50E">{{SelectedEvent.title}}</p>
+                        <p>{{SelectedEvent.description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,142 @@
+﻿
+<html>
+<head>
+    <title>Apartment</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+    function check(e,value){
+        var unicode=e.charCode? e.charCode : e.keyCode;
+        if (value.indexOf(".") != -1)if( unicode == 46 )return false;
+        if (unicode!=8)if((unicode<48||unicode>57))return false;
+    }
+    function checkLength(len,ele){
+    var fieldLength = ele.value.length;
+        if(fieldLength <= len){
+            return true;
+        }
+        else
+        {
+            var str = ele.value;
+            str = str.substring(0, str.length - 1);
+        ele.value = str;
+        }
+    }
+    </script>
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper-form">
+
+        <!-- ADD VIEW-->
+        <div ng-hide="isEdit">
+            <div class="form-style-5" ng-hide="showConfirmation">
+                <form name="form" id="form">
+                    <fieldset>
+                        <legend><span><i class="fa fa-bed" aria-hidden="true"></i></span> Add Apartment <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="aptnumber">Apartment Number*</label>
+                        <input type="number" name="aptnumber" id="aptnumber"  max="100000" ng-model="modelAdd.aptNumber" class="form-control" ng-pattern="/^\d+$/" onKeyPress="return check(event,value)" onInput="checkLength(5,this)" required>
+                        <span class="spanError" ng-show="!form.aptnumber.$pristine && form.aptnumber.$invalid">Apartment number is required</span>                
+
+                        <label class="control-label" for="floorNumber">Floor Number*</label>
+                        <input type="number" name="floorNumber" id="floorNumber" class="form-control" ng-pattern="/^\d{0,2}$/" ng-model="modelAdd.floorNumber" onKeyPress="return check(event,value)" onInput="checkLength(2,this)" required>
+                        <span class="spanError" ng-show="form.floorNumber.$error.pattern || form.floorNumber.$invalid && !form.floorNumber.$pristine">Floor number is required</span>                       
+
+                        <label class="control-label" for="unitId">Unit Type*</label>
+                        <select ng-model="modelAdd.unitId" name="unitId" id="unitId" required>
+                            <option ng-repeat="unit in units"  value="{{unit.Id}}">{{unit.Bedrooms}} Bedroom</option>
+                        </select>
+                        <span class="spanError" ng-show="form.unitId.$invalid && !form.unitId.$pristine">Unit type is required</span>
+                       
+                    </fieldset>
+                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary submitForm" ng-click="addApartment()">Add Apartment </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-hide="errorMessage==''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{errorMessage}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Apartment Number:</div>
+                        <div class="detailDivTableCell">{{modelAdd.aptNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Floor Number:</div>
+                        <div class="detailDivTableCell">{{modelAdd.floorNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Status:</div>
+                        <div class="detailDivTableCell">{{modelAdd.status}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Unit Type:</div>
+                        <div class="detailDivTableCell">{{modelAdd.unitType}} Bedroom</div>
+                    </div>
+                   
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                    <button type="button" class="btn btn-primary" ng-click="addAnother()">Add another</button>
+                </div>
+            </div>
+        </div>
+        <!-- END ADD VIEW-->
+
+        <!-- EDIT VIEW-->
+        <div ng-show="isEdit">
+            <div class="form-style-5" ng-hide="showEditConfirmation">
+                <form name="formEdit" id="form">
+                    <fieldset>
+                        <legend><span><i class="fa fa-bed" aria-hidden="true"></i></span> Edit Apartment <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="floorNumber">Floor Number*</label>
+                        <input type="number" name="floorNumber" id="floorNumber"  maxlength="5" class="form-control" ng-pattern="/^\d+$/" ng-model="modelEdit.floorNumber" onKeyPress="return check(event,value)" onInput="checkLength(2,this)">
+                        <span class="spanError" ng-show="!formEdit.floorNumber.$pristine && (formEdit.floorNumber.$error.pattern || formEdit.floorNumber.$invalid) ">Enter a floor number</span>                   
+
+                        <label class="control-label" for="status">Status</label>
+                        <input type="text" name="status" id="status" readonly ng-model="modelEdit.status" class="form-control" ng-pattern="/^[a-zA-Z ]+$/">
+                        <span class="spanError" ng-show="formEdit.status.$error.pattern || formEdit.status.$invalid && !formEdit.status.$pristine">Enter a status</span>
+
+                        <label class="control-label" for="unitId">Unit Type*</label>
+                        <select ng-model="modelEdit.unitId" name="unitId" id="unitId" required>
+                            <option ng-repeat="unit in units"  ng-selected="unit.Id == modelEdit.unitId" value="{{unit.Id}}">{{unit.Bedrooms}} Bedroom</option>
+                        </select>
+                        <span class="spanError" ng-show="formEdit.unitId.$invalid && !formEdit.unitId.$pristine">Enter a unit type</span>
+                    </fieldset>
+                    <button type="submit" ng-disabled="formEdit.$invalid" class="btn btn-primary submitForm" ng-click="editApartment()">Edit Apartment </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-hide="errorMessage==''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{errorMessage}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showEditConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Apartment Number:</div>
+                        <div class="detailDivTableCell">{{modelEdit.aptNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Floor Number:</div>
+                        <div class="detailDivTableCell">{{modelEdit.floorNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Status:</div>
+                        <div class="detailDivTableCell">{{modelEdit.status}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Unit Type:</div>
+                        <div class="detailDivTableCell">{{modelEdit.unitType}} Bedroom</div>
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                </div>
+            </div>
+        </div>
+        <!-- END EDIT VIEW-->
+
+
+
+
+
+    </div>
+</body>
+</html>
+

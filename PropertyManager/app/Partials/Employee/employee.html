@@ -1,0 +1,130 @@
+﻿
+<html>
+<head>
+    <title>Employee</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header" style="margin-top: 0px;">Employees</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <form>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                    <input type="text" class="form-control" placeholder="Search" ng-model="searchEmployee">
+                </div>
+            </div>
+        </form>
+        <button type="submit" style="float:left; margin-bottom:20px" class="btn btn-primary" ng-click="addOneClick()">Add</button>
+        <table class="table-fill" style="float: left">
+            <thead>
+                <tr>
+                    <th style="width: 1%"></th>
+                    <th style="width: 20%" class="text-left" ng-click="sortType = 'FirstName'; sortReverse = !sortReverse">First Name
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'FirstName' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'FirstName' && sortReverse"></i></span>
+                    </th>
+                    <th style="width: 5%" class="text-left" ng-click="sortType = 'LastName'; sortReverse = !sortReverse">Last Name
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'LastName' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'LastName' && sortReverse"></i></span>
+                    </th>
+                    <th style="width: 5%" class="text-left" ng-click="sortType = 'Title'; sortReverse = !sortReverse">Title
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'Title' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'Title' && sortReverse"></i></span>    
+                    </th>
+                    <th style="width: 10%" class="text-left" ng-click="sortType = 'Phone'; sortReverse = !sortReverse">Phone
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'Phone' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'Phone' && sortReverse"></i></span> 
+                    </th>
+                    <th style="width: 20%" class="text-left" ng-click="sortType = 'Email'; sortReverse = !sortReverse">Email
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'Email' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'Email' && sortReverse"></i></span> 
+                    </th>
+                    <th style="width: 20%" class="text-left" ng-click="sortType = 'HireDate'; sortReverse = !sortReverse">Hire Date
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'HireDate' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'HireDate' && sortReverse"></i></span> 
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list-tbody" ng-repeat="employee in employees | orderBy:sortType:sortReverse | filter:searchEmployee" ng-class-odd="'list-row-odd'" ng-class-even="'list-row-even'">
+                <tr class="list-hover">
+                    <td>
+                        <i style="cursor: pointer" class="fa fa-minus" ng-if="employee.expanded" ng-click="employee.expanded = false"></i>
+                        <i style="cursor: pointer" class="fa fa-plus" ng-if="!employee.expanded" ng-click="employee.expanded = true;"></i>
+                    </td>
+                    <td class="text-left">{{employee.FirstName}}</td>
+                    <td class="text-left">{{employee.LastName}}</td>
+                    <td class="text-left">{{employee.Title}}</td>
+                    <td class="text-left">{{employee.Phone}}</td>
+                    <td class="text-left">{{employee.Email}}</td>
+                    <td class="text-left">{{employee.HireDate | date:'MM-dd-yyyy'}}</td>
+                </tr>
+                <tr class="details-row" ng-if="employee.expanded" ng-repeat-end="">
+                    <td colspan="7">      
+                        <div class="detailDivTable">
+                            <div class="detailDivTableBody detailLeft">
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">First Name:</div>
+                                    <div class="detailDivTableCell">{{employee.FirstName}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Last Name:</div>
+                                    <div class="detailDivTableCell">{{employee.LastName}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Birth Date:</div>
+                                    <div class="detailDivTableCell">{{employee.BirthDate}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Hire Date:</div>
+                                    <div class="detailDivTableCell">{{employee.HireDate}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Title:</div>
+                                    <div class="detailDivTableCell">{{employee.Title}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Address:</div>
+                                    <div class="detailDivTableCell">{{employee.Address}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Province:</div>
+                                    <div class="detailDivTableCell">{{employee.State}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">City:</div>
+                                    <div class="detailDivTableCell">{{employee.City}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Postal Code:</div>
+                                    <div class="detailDivTableCell">{{employee.PostalCode}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Phone:</div>
+                                    <div class="detailDivTableCell">{{employee.Phone}}</div>
+                                </div>                          
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Email:</div>
+                                    <div class="detailDivTableCell">{{employee.Email}}</div>
+                                </div>
+                            </div>
+                            <div class="detailRight">
+                                <button type="submit" class="btn btn-primary" style="float: right;" ng-click="editClick(employee.Id)">Edit</button>
+                                <button type="submit" class="btn btn-primary cancelAddButton" style="float: right; margin-top: 10px;" ng-confirm-click="Are you sure to delete this record ?" confirmed-click="delete(employee.Id)">Delete</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

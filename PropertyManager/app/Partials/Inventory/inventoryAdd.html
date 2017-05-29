@@ -1,0 +1,126 @@
+﻿
+<html>
+<head>
+    <title>Inventory Add</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+    function check(e,value){
+        var unicode=e.charCode? e.charCode : e.keyCode;
+        if (value.indexOf(".") != -1)if( unicode == 46 )return false;
+        if (unicode != 8) if ((unicode < 48 || unicode > 57) && unicode != 45) return false;
+    }
+    function checkLength(len,ele){
+    var fieldLength = ele.value.length;
+        if(fieldLength <= len){
+            return true;
+        }
+        else
+        {
+            var str = ele.value;
+            str = str.substring(0, str.length - 1);
+        ele.value = str;
+        }
+    }
+    </script>
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper-form">
+
+        <!--ADD FORM-->
+        <div ng-hide="isEdit">
+            <div class="form-style-5" ng-hide="showConfirmation">
+                <form name="form" id="form">
+                    <fieldset>
+                        <legend><span><i class="fa fa-list" aria-hidden="true"></i></span> Add Inventory <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="productName">Product Name*</label>
+                        <input type="text" name="productName" id="productName" ng-model="modelAdd.productName" ng-pattern="/^[a-zA-Z\-\\.\x27 ]+$/" class="form-control" maxlength="20" required>
+                        <span class="spanError" ng-show="form.productName.$error.required && !form.productName.$pristine">Product name is required</span>
+                        <span class="spanError" ng-show="form.productName.$error.pattern && !form.productName.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="supplier">Supplier</label>
+                        <input type="text" name="supplier" id="supplier" ng-model="modelAdd.supplier" ng-pattern="/^[a-zA-Z\-\\.\x27 ]+$/" class="form-control" maxlength="20">
+                        <span class="spanError" ng-show="form.supplier.$error.pattern && !form.supplier.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="quantity">Quantity*</label>
+                        <input type="number" name="quantity" id="quantity" class="form-control" ng-pattern="/^-?[0-9]+$/" ng-model="modelAdd.quantity" onKeyPress="return check(event,value)" onInput="checkLength(6,this)" required>
+                        <span class="spanError" ng-show="form.quantity.$error.pattern && !form.quantity.$pristine">Enter valid characters</span>
+                        <span class="spanError" ng-show="form.quantity.$error.required && !form.quantity.$pristine">Quantity is required</span>
+                    </fieldset>
+                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary submitForm" ng-click="addInventory()">Add Inventory </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Product Name:</div>
+                        <div class="detailDivTableCell">{{modelAdd.productName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Supplier:</div>
+                        <div class="detailDivTableCell">{{modelAdd.supplier}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Quantity:</div>
+                        <div class="detailDivTableCell">{{modelAdd.quantity}}</div>
+                    </div>                   
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                    <button type="button" class="btn btn-primary" ng-click="addAnother()">Add another</button>
+                </div>
+            </div>
+        </div>
+        <!--ADD FORM-->
+        <!--EDIT FORM-->
+        <div ng-show="isEdit">
+            <div class="form-style-5" ng-hide="showEditConfirmation">
+                <form name="formEdit" id="formEdit">
+                    <fieldset>
+                        <legend><span><i class="fa fa-list" aria-hidden="true"></i></span> Edit Inventory <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="productName">Product Name*</label>
+                        <input type="text" name="productName" id="productName" ng-model="modelEdit.productName" ng-pattern="/^[a-zA-Z\-\\.\x27 ]+$/" class="form-control" maxlength="20" required>
+                        <span class="spanError" ng-show="formEdit.productName.$error.pattern && !formEdit.productName.$pristine">Enter valid characters</span>
+                        <span class="spanError" ng-show="formEdit.productName.$error.required && !formEdit.productName.$pristine">Product name is required</span>
+
+                        <label class="control-label" for="supplier">Supplier</label>
+                        <input type="text" name="supplier" id="supplier" ng-model="modelEdit.supplier" ng-pattern="/^[a-zA-Z\-\\.\x27 ]+$/" class="form-control" maxlength="20">
+                        <span class="spanError" ng-show="formEdit.supplier.$error.pattern && !formEdit.supplier.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="quantity">Quantity*</label>
+                        <input type="number" name="quantity" id="quantity" class="form-control" ng-pattern="/^-?[0-9]+$/" ng-model="modelEdit.quantity" onKeyPress="return check(event,value)" onInput="checkLength(6,this)" required>
+                        <span class="spanError" ng-show="formEdit.quantity.$error.pattern && !formEdit.quantity.$pristine">Quantity is required</span>
+                        <span class="spanError" ng-show="formEdit.quantity.$error.required && !formEdit.quantity.$pristine">Enter valid characters</span>
+                    </fieldset>
+                    <button type="submit" ng-disabled="formEdit.$invalid" class="btn btn-primary submitForm" ng-click="editInventory()">Edit Inventory </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showEditConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Product Name:</div>
+                        <div class="detailDivTableCell">{{modelEdit.productName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Supplier:</div>
+                        <div class="detailDivTableCell">{{modelEdit.supplier}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Quantity:</div>
+                        <div class="detailDivTableCell">{{modelEdit.quantity}}</div>
+                    </div>                   
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                </div>
+            </div>
+        </div>
+        <!--EDIT FORM-->
+
+    </div>
+</body>
+</html>

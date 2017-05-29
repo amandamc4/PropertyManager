@@ -1,0 +1,210 @@
+﻿
+<html>
+<head>
+    <title>Lease Add</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+    function check(e,value){
+        var unicode=e.charCode? e.charCode : e.keyCode;
+        if (value.indexOf(".") != -1)if( unicode == 46 )return false;
+        if (unicode!=8)if((unicode<48||unicode>57))return false;
+    }
+
+    function checkDigit(e, value) {
+        var unicode = e.charCode ? e.charCode : e.keyCode;
+        if (value.indexOf(".") != -1) if (unicode == 46) return false;
+        if (unicode != 8) if ((unicode < 48 || unicode > 57) && unicode != 46) return false;
+    }
+
+    function checkLength(len,ele){
+    var fieldLength = ele.value.length;
+        if(fieldLength <= len){
+            return true;
+        }
+        else
+        {
+            var str = ele.value;
+            str = str.substring(0, str.length - 1);
+        ele.value = str;
+        }
+    }
+    </script>
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper-form">
+        <!--ADD FORM-->
+        <div ng-hide="isEdit">
+            <div class="form-style-5" ng-hide="showConfirmation">
+                <form name="form" id="form">
+                    <fieldset>
+                        <legend><span><i class="fa fa-handshake-o" aria-hidden="true"></i></span> Add Lease <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="startDate">Start Date*</label>
+                        <div>
+                            <input style="float: left" type="text" class="text-date form-control" name="startDate" id="startDate" uib-datepicker-popup="MM/dd/yyyy" ng-required="true" ng-model="modelAdd.startDate" is-open="popup1.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="form.startDate.$invalid && !form.startDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>
+
+                        <label class="control-label" for="endDate">End Date*</label>
+                        <div>
+                            <input style="float: left" type="text" class="text-date form-control" name="endDate" id="endDate" uib-datepicker-popup="MM/dd/yyyy" ng-required="true" ng-model="modelAdd.endDate" is-open="popup2.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="form.endDate.$invalid && !form.endDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>                      
+
+                        <label class="control-label" for="monthlyRent">Monthly Rent*</label>
+                        <input type="number" name="monthlyRent" id="monthlyRent"  ng-model="modelAdd.monthlyRent" step="any" max="10000" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" class="form-control" onKeyPress="return checkDigit(event, value)" onInput="checkLength(9, this)" required>
+                        <span class="spanError" ng-show="form.monthlyRent.$error.pattern && !form.monthlyRent.$pristine">Enter valid characters</span>
+                        <span class="spanError" ng-show="form.monthlyRent.$error.required && !form.monthlyRent.$pristine">Monthly rent is required</span>
+
+                        <label class="control-label" for="securityDeposit">Security Deposit</label>
+                        <input type="number" name="securityDeposit" id="securityDeposit"  ng-model="modelAdd.securityDeposit" step="any" max="10000" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" class="form-control" onKeyPress="return checkDigit(event, value)" onInput="checkLength(9, this)">
+                        <span class="spanError" ng-show="form.securityDeposit.$error.pattern && !form.securityDeposit.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="aptnumber">Apartment Number*</label>
+                        <input type="number" name="aptnumber" id="aptnumber" max="10000" ng-model="modelAdd.apartmentId" class="form-control" ng-pattern="/^\d+$/" onKeyPress="return check(event,value)" onInput="checkLength(5,this)" required>
+                        <span class="spanError" ng-show="form.aptnumber.$error.pattern && !form.aptnumber.$pristine">Enter valid characters</span>
+                        <span class="spanError" ng-show="form.aptnumber.$error.required && !form.aptnumber.$pristine">Apartment number is required</span>
+
+                        <label class="control-label" for="tenantEmail">Tenant Email*</label>                    
+                        <input type="email" name="tenantEmail" id="tenantEmail" class="form-control" ng-model="modelAdd.tenantEmail" required maxlength="30">
+                        <span class="spanError" ng-show="form.tenantEmail.$error.pattern && !form.tenantEmail.$pristine">Enter valid characters</span>    
+                        <span class="spanError" ng-show="form.tenantEmail.$error.required && !form.tenantEmail.$pristine">Tenant email is required</span>                                                                  
+                     
+                    </fieldset>
+                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary submitForm" ng-click="addLease()">Add Lease </button>
+                    <br /><span style="margin:10px;" class="spanError" ng-show="errorMessage!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{errorMessage}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Apartment Number:</div>
+                        <div class="detailDivTableCell">{{modelAdd.apartmentId}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Tenant Name:</div>
+                        <div class="detailDivTableCell">{{modelAdd.tenantName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Start Date:</div>
+                        <div class="detailDivTableCell">{{modelAdd.startDate | date:'MM-dd-yyyy'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">End Date:</div>
+                        <div class="detailDivTableCell">{{modelAdd.endDate | date:'MM-dd-yyyy'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Monthly Rent:</div>
+                        <div class="detailDivTableCell">{{modelAdd.monthlyRent}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Security Deposit:</div>
+                        <div class="detailDivTableCell">{{modelAdd.securityDeposit}}</div>
+                    </div>                                              
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                    <button type="button" class="btn btn-primary" ng-click="addAnother()">Add another</button>
+                </div>
+            </div>
+        </div>
+        <!--ADD FORM-->
+        <!--EDIT FORM-->
+        <div ng-show="isEdit">
+            <div class="form-style-5" ng-hide="showEditConfirmation">
+                <form name="formEdit" id="formEdit">
+                    <fieldset>
+                        <legend><span><i class="fa fa-handshake-o" aria-hidden="true"></i></span> Edit Lease <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="aptnumber">Apartment Number</label>
+                        <input type="number" name="aptnumber" id="aptnumber" max="10000" ng-model="modelEdit.apartmentId" class="form-control" ng-pattern="/^\d+$/" readonly required>
+                        <span class="spanError" ng-show="form.aptnumber.$error.pattern || form.aptnumber.$invalid && !form.aptnumber.$pristine">Enter an apartment number</span>
+
+                        <label class="control-label" for="tenantName">Tenant Name</label>
+                        <input type="text" class="form-control" ng-model="modelEdit.tenantName" readonly>
+                        <span class="spanError" ng-show="form.tenantName.$error.pattern || form.tenantName.$invalid && !form.tenantName.$pristine">Enter a tenant name</span>                                   
+
+                        <label class="control-label" for="startDate">Start Date*</label>
+                        <div>
+                            <input style="float: left" type="text" class="text-date form-control" name="startDate" id="startDate" uib-datepicker-popup="MM/dd/yyyy" ng-required="true" ng-model="modelEdit.startDate" is-open="popup1.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="formEdit.startDate.$invalid && !formEdit.startDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>
+
+                        <label class="control-label" for="endDate">End Date*</label>
+                        <div>
+                            <input style="float: left" type="text" class="text-date form-control" name="endDate" id="endDate" uib-datepicker-popup="MM/dd/yyyy" ng-required="true" ng-model="modelEdit.endDate" is-open="popup2.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="formEdit.endDate.$invalid && !formEdit.endDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>             
+
+                        <label class="control-label" for="monthlyRent" ng-show="editMonthlyRent">Monthly Rent*</label>
+                        <input type="number" name="monthlyRent" id="monthlyRent" ng-model="modelEdit.monthlyRent"step="any"  max="10000" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" class="form-control" onKeyPress="return checkDigit(event, value)" onInput="checkLength(9, this)" ng-show="editMonthlyRent" required>
+                        <span class="spanError" ng-show="formEdit.monthlyRent.$error.pattern  && !formEdit.monthlyRent.$pristine">Enter valid characters</span>
+                        <span class="spanError" ng-show="formEdit.monthlyRent.$error.required && !formEdit.monthlyRent.$pristine">Monthly rent is required</span>
+
+                        <label class="control-label" for="securityDeposit" ng-show="editMonthlyRent">Security Deposit</label>
+                        <input type="number" name="securityDeposit" id="securityDeposit" ng-model="modelEdit.securityDeposit" step="any" class="form-control" onKeyPress="return checkDigit(event, value)" onInput="checkLength(9, this)" ng-show="editMonthlyRent">
+                        <span class="spanError" ng-show="formEdit.securityDeposit.$error.pattern && !formEdit.securityDeposit.$pristine">Enter valid characters</span>
+
+                        <div ng-hide="editMonthlyRent">
+                            <label class="control-label" for="monthlyRent">Monthly Rent</label>
+                            <input type="text" name="monthlyRent" id="monthlyRent" ng-model="modelEdit.monthlyRent" class="form-control" readonly style="width:120px;">
+
+                            <label class="control-label" for="securityDeposit">Security Deposit</label>
+                            <input type="text" name="securityDeposit" id="securityDeposit" ng-model="modelEdit.securityDeposit" class="form-control" readonly style="width:120px;">
+                        </div>
+                    </fieldset>
+                    <button type="submit" ng-disabled="formEdit.$invalid" class="btn btn-primary submitForm" ng-click="editLease()">Edit Lease </button>
+                    <br /><span style="margin:10px;" class="spanError" ng-show="errorMessage!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{errorMessage}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showEditConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Apartment Number:</div>
+                        <div class="detailDivTableCell">{{modelEdit.apartmentId}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Tenant Name:</div>
+                        <div class="detailDivTableCell">{{modelEdit.tenantName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Start Date:</div>
+                        <div class="detailDivTableCell">{{modelEdit.startDate | date:'MM-dd-yyyy'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">End Date:</div>
+                        <div class="detailDivTableCell">{{modelEdit.endDate | date:'MM-dd-yyyy'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Monthly Rent:</div>
+                        <div class="detailDivTableCell">{{modelEdit.monthlyRent}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Security Deposit:</div>
+                        <div class="detailDivTableCell">{{modelEdit.securityDeposit}}</div>
+                    </div>        
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                </div>
+            </div>
+        </div>
+        <!--EDIT FORM-->
+
+    </div>
+</body>
+</html>
+

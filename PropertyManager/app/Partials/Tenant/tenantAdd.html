@@ -1,0 +1,219 @@
+﻿
+<html>
+<head>
+    <title>Tenant Add</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        $('#mobileNumber').keyup(function () {
+            if ($(this).val() != null) {
+                foo = $(this).val().split("-").join(""); 
+
+                foo = foo.match(new RegExp('.{1,4}$|.{1,3}', 'g')).join("-");
+
+                $(this).val(foo);
+            }
+
+        });
+        $('#homeNumber').keyup(function () {
+            if ($(this).val() != null) {
+                foo = $(this).val().split("-").join(""); 
+
+                foo = foo.match(new RegExp('.{1,4}$|.{1,3}', 'g')).join("-");
+
+                $(this).val(foo);
+            }
+
+        });
+
+        $('#mobileNumber2').keyup(function () {
+            if ($(this).val() != null) {
+                foo = $(this).val().split("-").join("");
+
+                foo = foo.match(new RegExp('.{1,4}$|.{1,3}', 'g')).join("-");
+
+                $(this).val(foo);
+            }
+
+        });
+        $('#homeNumber2').keyup(function () {
+            if ($(this).val() != null) {
+                foo = $(this).val().split("-").join("");
+
+                foo = foo.match(new RegExp('.{1,4}$|.{1,3}', 'g')).join("-");
+
+                $(this).val(foo);
+            }
+
+        });
+
+        function check(e, value) {
+            var unicode = e.charCode ? e.charCode : e.keyCode;
+            if (value.indexOf(".") != -1) if (unicode == 46) return false;
+            if (unicode != 8) if ((unicode < 48 || unicode > 57) && unicode != 45) return false;
+        }
+    </script>
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper-form">
+
+        <!--ADD FORM-->
+        <div ng-hide="isEdit">
+            <div class="form-style-5" ng-hide="showConfirmation">
+                <form name="form" id="form">
+                    <fieldset>
+                        <legend><span><i class="fa fa-users" aria-hidden="true"></i></span> Add Tenant <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="firstName">First Name*</label>
+                        <input type="text" name="firstName" id="firstName" ng-model="modelAdd.firstName" ng-pattern="/^[a-zA-Z ]+$/" class="form-control" maxlength="20" required>
+                        <span class="spanError" ng-show="form.firstName.$error.pattern && !form.firstName.$pristine">Enter valid characters</span>
+                        <span class="spanError" ng-show="form.firstName.$error.required && !form.firstName.$pristine">First name is required</span>
+
+                        <label class="control-label" for="lastName">Last Name*</label>
+                        <input type="text" name="lastName" id="lastName" ng-model="modelAdd.lastName" ng-pattern="/^[a-zA-Z ]+$/" class="form-control" maxlength="20" required>
+                        <span class="spanError" ng-show="form.lastName.$error.pattern && !form.lastName.$pristine">Enter valid characters</span>
+                        <span class="spanError" ng-show="form.lastName.$error.required && !form.lastName.$pristine">Last name is required</span>
+
+                        <label class="control-label" for="mobileNumber">Mobile Number*</label>
+                        <input type="text" name="mobileNumber" id="mobileNumber" ng-model="modelAdd.mobileNumber" class="form-control" placeholder="numbers only" ng-pattern="/^[0-9]{3}[-]{1}[0-9]{3}[-]{1}[0-9]{4}$/" maxlength="12" required onKeyPress="return check(event,value)">
+                        <span class="spanError" ng-show="form.mobileNumber.$error.required && !form.mobileNumber.$pristine">Phone number is required</span>
+                        <span class="spanError" ng-show="form.mobileNumber.$error.maxlength && !form.mobileNumber.$pristine">Phone number is too big</span>
+
+                        <label class="control-label" for="phone">Home Number</label>
+                        <input type="text" name="homeNumber" id="homeNumber" class="form-control" ng-model="modelAdd.homeNumber" placeholder="numbers only" ng-pattern="/^[0-9]{3}[-]{1}[0-9]{3}[-]{1}[0-9]{4}$/" maxlength="12" onKeyPress="return check(event,value)"/>
+                        <span class="spanError" ng-show="form.homeNumber.$error.maxlength && !form.homeNumber.$pristine">The phone is too big</span>
+
+                        <label class="control-label" for="email">Email*</label>
+                        <input type="email" name="email" id="email" class="form-control" ng-model="modelAdd.email" maxlength="30" required />
+                        <span class="spanError" ng-show="form.email.$invalid && !form.email.$pristine">Email is required</span>
+
+                        <label class="control-label" for="birthDate">Birth Date*</label>
+                        <div>
+                            <input style="float: left" type="text" name="birthDate" id="birthDate" class="text-date form-control" uib-datepicker-popup="MM/dd/yyyy" ng-required="true" ng-model="modelAdd.birthDate" is-open="popup1.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="form.birthDate.$invalid && !form.birthDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>                     
+
+                    </fieldset>
+                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary submitForm" ng-click="addTenant()">Add Tenant </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">First Name:</div>
+                        <div class="detailDivTableCell">{{modelAdd.firstName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Last Name:</div>
+                        <div class="detailDivTableCell">{{modelAdd.lastName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Mobile Phone:</div>
+                        <div class="detailDivTableCell">{{modelAdd.mobileNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Home Phone:</div>
+                        <div class="detailDivTableCell">{{modelAdd.homeNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Email:</div>
+                        <div class="detailDivTableCell">{{modelAdd.email}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Birth Date:</div>
+                        <div class="detailDivTableCell">{{modelAdd.birthDate | date:'MM-dd-yyyy'}}</div>
+                    </div>                                    
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                    <button type="button" class="btn btn-primary" ng-click="addAnother()">Add another</button>
+                </div>
+            </div>
+        </div>
+        <!--ADD FORM-->
+        <!--EDIT FORM-->
+        <div ng-show="isEdit">
+            <div class="form-style-5" ng-hide="showEditConfirmation">
+                <form name="formEdit" id="formEdit">
+                    <fieldset>
+                        <legend><span><i class="fa fa-users" aria-hidden="true"></i></span> Edit Tenant <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="firstName">First Name*</label>
+                        <input type="text" name="firstName" id="firstName" ng-model="modelEdit.firstName" ng-pattern="/^[a-zA-Z ]+$/" class="form-control" maxlength="10" required>
+                        <span class="spanError" ng-show="formEdit.firstName.$error.pattern && !formEdit.firstName.$pristine">Enter valid characters</span>
+                        <span class="spanError" ng-show="formEdit.firstName.$error.required && !formEdit.firstName.$pristine">First name is required</span>
+
+                        <label class="control-label" for="lastName">Last Name*</label>
+                        <input type="text" name="lastName" id="lastName" ng-model="modelEdit.lastName" ng-pattern="/^[a-zA-Z ]+$/" class="form-control" maxlength="20" required>
+                        <span class="spanError" ng-show="formEdit.lastName.$error.pattern && !formEdit.lastName.$pristine">Enter valid characters</span>
+                        <span class="spanError" ng-show="formEdit.lastName.$error.required && !formEdit.lastName.$pristine">Last name is required</span>
+
+                        <label class="control-label" for="mobileNumber">Mobile Number*</label>
+                        <input type="text" name="mobileNumber2" id="mobileNumber2" ng-model="modelEdit.mobileNumber" placeholder="numbers only" ng-pattern="/^[0-9]{3}[-]{1}[0-9]{3}[-]{1}[0-9]{4}$/" class="form-control" maxlength="12" onKeyPress="return check(event,value)" required>
+                        <span class="spanError" ng-show="formEdit.mobileNumber2.$error.required && !formEdit.mobileNumber2.$pristine">Phone number is required</span> 
+                        <span class="spanError" ng-show="formEdit.mobileNumber2.$error.maxlength && !formEdit.mobileNumber2.$pristine">The phone number is too big</span>   
+
+                        <label class="control-label" for="phone">Home Number</label>
+                        <input type="text" name="homeNumber2" id="homeNumber2" class="form-control" ng-model="modelEdit.homeNumber" placeholder="numbers only" ng-pattern="/^[0-9]{3}[-]{1}[0-9]{3}[-]{1}[0-9]{4}$/" maxlength="12" onKeyPress="return check(event,value)"/>
+                        <span class="spanError" ng-show="formEdit.homeNumber2.$error.maxlength && !formEdit.homeNumber2.$pristine">The phone is too big</span>
+
+                        <label class="control-label" for="email">Email*</label>
+                        <input type="email" name="email" id="email" class="form-control" ng-model="modelEdit.email" maxlength="30" required readonly/>
+                        <span class="spanError" ng-show="formEdit.email.$invalid && !formEdit.email.$pristine">Email is required</span>
+
+                        <label class="control-label" for="birthDate">Birth Date*</label>
+                        <div>
+                            <input style="float: left" type="text" name="birthDate" id="birthDate" class="text-date form-control" uib-datepicker-popup="MM/dd/yyyy" ng-required="true" ng-model="modelEdit.birthDate" is-open="popup1.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="formEdit.birthDate.$invalid && !formEdit.birthDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>          
+
+                    </fieldset>
+                    <button type="submit" ng-disabled="formEdit.$invalid" class="btn btn-primary submitForm" ng-click="editTenant()">Edit Tenant </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showEditConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">First Name:</div>
+                        <div class="detailDivTableCell">{{modelEdit.firstName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Last Name:</div>
+                        <div class="detailDivTableCell">{{modelEdit.lastName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Mobile Phone:</div>
+                        <div class="detailDivTableCell">{{modelEdit.mobileNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Home Phone:</div>
+                        <div class="detailDivTableCell">{{modelEdit.homeNumber}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Email:</div>
+                        <div class="detailDivTableCell">{{modelEdit.email}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Birth Date:</div>
+                        <div class="detailDivTableCell">{{modelEdit.birthDate | date:'MM-dd-yyyy'}}</div>
+                    </div>                                    
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                </div>
+            </div>
+        </div>
+        <!--EDIT FORM-->
+
+    </div>
+</body>
+</html>
+

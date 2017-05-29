@@ -1,0 +1,115 @@
+﻿
+<html>
+<head>
+    <title>Unit</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body ng-app="propertyManagerApp">
+        <div ng-include='"/app/Partials/menu.html"'></div>
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" style="margin-top: 0px;">Units</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <form>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                        <input type="text" class="form-control" placeholder="Search" ng-model="searchUnit">
+                    </div>
+                </div>
+            </form>
+            <button type="submit" style="float:left; margin-bottom:20px" class="btn btn-primary" ng-click="addOneClick()">Add</button>
+            <table class="table-fill" style="float: left">
+                <thead>
+                    <tr>
+                        <th style="width: 2%"></th>
+                        <th style="width: 20%" class="text-left" ng-click="sortType = 'bedrooms'; sortReverse = !sortReverse">
+                            Bedrooms
+                            <span><i class="fa fa-caret-up" ng-show="sortType == 'bedrooms' && !sortReverse"></i></span>
+                            <span><i class="fa fa-caret-down" ng-show="sortType == 'bedrooms' && sortReverse"></i></span>
+                        </th>
+                        <th style="width: 20%" class="text-left" ng-click="sortType = 'bathrooms'; sortReverse = !sortReverse">
+                            Bathrooms
+                            <span><i class="fa fa-caret-up" ng-show="sortType == 'bathrooms' && !sortReverse"></i></span>
+                            <span><i class="fa fa-caret-down" ng-show="sortType == 'bathrooms' && sortReverse"></i></span>
+                        </th>
+                        <th style="width: 20%" class="text-left" ng-click="sortType = 'squareFeet'; sortReverse = !sortReverse">
+                            Square Feet
+                            <span><i class="fa fa-caret-up" ng-show="sortType == 'squareFeet' && !sortReverse"></i></span>
+                            <span><i class="fa fa-caret-down" ng-show="sortType == 'squareFeet' && sortReverse"></i></span>
+                        </th>
+                        <th style="width: 50%" class="text-left" ng-click="sortType = 'maxOccupants'; sortReverse = !sortReverse">
+                            Max Occupants
+                            <span><i class="fa fa-caret-up" ng-show="sortType == 'maxOccupants' && !sortReverse"></i></span>
+                            <span><i class="fa fa-caret-down" ng-show="sortType == 'maxOccupants' && sortReverse"></i></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="list-tbody" ng-repeat="unit in units | orderBy:sortType:sortReverse | filter:searchUnit" ng-class-odd="'list-row-odd'" ng-class-even="'list-row-even'">
+                    <tr class="list-hover">
+                        <td>
+                            <i style="cursor: pointer" class="fa fa-minus" ng-if="unit.expanded" ng-click="unit.expanded = false"></i>
+                            <i style="cursor: pointer" class="fa fa-plus" ng-if="!unit.expanded" ng-click="unit.expanded = true;"></i>
+                        </td>
+                        <td class="text-left">{{unit.Bedrooms}}</td>
+                        <td class="text-left">{{unit.Bathrooms}}</td>
+                        <td class="text-left">{{unit.SquareFeet}}</td>
+                        <td class="text-left">{{unit.MaxOccupants}}</td>
+                    </tr>
+                    <tr class="details-row" ng-if="unit.expanded" ng-repeat-end="">
+                        <td colspan="7">
+                            <div class="detailDivTable">
+                                <div class="detailDivTableBody detailLeft">
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Bedrooms:</div>
+                                        <div class="detailDivTableCell">{{unit.Bedrooms}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Bathrooms:</div>
+                                        <div class="detailDivTableCell">{{unit.Bathrooms}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">SquareFeet:</div>
+                                        <div class="detailDivTableCell">{{unit.SquareFeet}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Max Occupants:</div>
+                                        <div class="detailDivTableCell">{{unit.MaxOccupants}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Balcony:</div>
+                                        <div class="detailDivTableCell">{{unit.Balcony?'Yes':'No'}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Laundry:</div>
+                                        <div class="detailDivTableCell">{{unit.Laundry?'Yes':'No'}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Dishwasher:</div>
+                                        <div class="detailDivTableCell">{{unit.Dishwasher?'Yes':'No'}}</div>
+                                    </div>                                   
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Photo:</div>                             
+                                    </div>
+                                    <div class="detailDivTableRow">                           
+                                        <div class="detailDivTableCell" ng-repeat="photo in unit.UnitPhotos"><img src="{{photo.PathName}}" width="100" height="100"  style="cursor: pointer" ng-click="openPic(photo.PathName);"/></div>
+                                    </div>
+                                </div>
+                                <div class="detailRight">
+                                    <button type="submit" class="btn btn-primary" style="float: right;" ng-click="editClick(unit.Id)">Edit</button>
+                                    <button type="submit" class="btn btn-primary cancelAddButton" style="float: right; margin-top: 10px;" ng-confirm-click="Are you sure to delete this record ?" confirmed-click="delete(unit.Id)">Delete</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+</body>
+</html>

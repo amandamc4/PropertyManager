@@ -1,0 +1,68 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <meta charset="utf-8" />
+</head>
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper" style="height: 100%; max-width: 1136px;">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header" style="margin-top: 0px;">Dashboard</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+     
+            <div style="height: 300px; overflow: scroll; width: 50%; float: left">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Announcements
+                    </div>
+                    <!-- .panel-heading -->
+                    <div class="panel-body">
+                        <div class="panel-group" id="accordion" ng-controller="announcementController">
+                            <div class="panel panel-default" ng-repeat="announce in announces | orderBy:announce.ExpireDate : true">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a>{{announce.Title}}</a>
+                                    </h4>
+                                </div>
+                                <div>
+                                    <div class="panel-body">
+                                        {{announce.Description}}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- .panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+       <!-- <br />
+        <br />
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header" style="margin-top: 0px;">Events</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+      <!--  </div>-->
+        <div ng-controller="facilityBookingController" style="float: right; width: 50%">
+            <div class="col-md-12" style="float: left;">
+                <div id="calendar" ui-calendar="uiConfig.calendar" ng-model="eventSources" calendar="myCalendar"></div>
+            </div>
+           <!-- <div class="col-md-4">
+            <div ng-show="SelectedEvent" class="alert alert-success" style="margin-top:50px;">
+                <h3 style="margin-top:0px"> Selected Event:</h3>
+                <h3 style="color:#A9A50E">{{SelectedEvent.title}}</h3>
+                <p>{{SelectedEvent.description}}</p>
+            </div>
+        </div> --> 
+        </div>   
+        </div>        
+</body>
+</html>

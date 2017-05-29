@@ -1,0 +1,101 @@
+﻿
+<html>
+<head>
+    <title>Service</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body ng-app="propertyManagerApp">
+        <div ng-include='"/app/Partials/menu.html"'></div>
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header" style="margin-top: 0px;">Services</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <form>
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                        <input type="text" class="form-control" placeholder="Search" ng-model="searchService">
+                    </div>
+                </div>
+            </form>
+            <button type="submit" style="float:left; margin-bottom:20px" class="btn btn-primary" ng-click="addOneClick()">Add</button>
+            <table class="table-fill" style="float: left">
+                <thead>
+                    <tr>
+                        <th style="width: 2%"></th>
+                        <th class="text-left" ng-click="sortType = 'name'; sortReverse = !sortReverse">
+                            Service
+                            <span><i class="fa fa-caret-up" ng-show="sortType == 'name' && !sortReverse"></i></span>
+                            <span><i class="fa fa-caret-down" ng-show="sortType == 'name' && sortReverse"></i></span>
+                        </th>
+                        <th class="text-left" ng-click="sortType = 'company'; sortReverse = !sortReverse">
+                            Company Name
+                            <span><i class="fa fa-caret-up" ng-show="sortType == 'company' && !sortReverse"></i></span>
+                            <span><i class="fa fa-caret-down" ng-show="sortType == 'company' && sortReverse"></i></span>
+                        </th>
+                        <th style="width: 25%" class="text-left" ng-click="sortType = 'companyPhone'; sortReverse = !sortReverse">
+                            Company Phone Number
+                            <span><i class="fa fa-caret-up" ng-show="sortType == 'companyPhone' && !sortReverse"></i></span>
+                            <span><i class="fa fa-caret-down" ng-show="sortType == 'companyPhone' && sortReverse"></i></span>
+                        </th>
+                        <th class="text-left" ng-click="sortType = 'companyEmail'; sortReverse = !sortReverse">
+                            Company Email
+                            <span><i class="fa fa-caret-up" ng-show="sortType == 'companyEmail' && !sortReverse"></i></span>
+                            <span><i class="fa fa-caret-down" ng-show="sortType == 'companyEmail' && sortReverse"></i></span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="list-tbody" ng-repeat="service in services | orderBy:sortType:sortReverse | filter:searchService" ng-class-odd="'list-row-odd'" ng-class-even="'list-row-even'">
+                    <tr class="list-hover">
+                        <td>
+                            <i style="cursor: pointer" class="fa fa-minus" ng-if="service.expanded" ng-click="service.expanded = false"></i>
+                            <i style="cursor: pointer" class="fa fa-plus" ng-if="!service.expanded" ng-click="service.expanded = true;"></i>
+                        </td>
+                        <td class="text-left">{{service.ServiceName}}</td>
+                        <td class="text-left">{{service.CompanyName}}</td>
+                        <td class="text-left">{{service.PhoneNumber}}</td>
+                        <td class="text-left">{{service.Email}}</td>
+                    </tr>
+                    <tr class="details-row" ng-if="service.expanded" ng-repeat-end="">
+                        <td colspan="7">
+                            <div class="detailDivTable">
+                                <div class="detailDivTableBody detailLeft">
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Service:</div>
+                                        <div class="detailDivTableCell">{{service.ServiceName}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Company Name:</div>
+                                        <div class="detailDivTableCell">{{service.CompanyName}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Phone number:</div>
+                                        <div class="detailDivTableCell">{{service.PhoneNumber}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Email:</div>
+                                        <div class="detailDivTableCell">{{service.Email}}</div>
+                                    </div>
+                                    <div class="detailDivTableRow">
+                                        <div class="detailDivTableHeader">Address:</div>
+                                        <div class="detailDivTableCell">{{service.Address}}</div>
+                                    </div>                                   
+                                </div>
+                                <div class="detailRight">
+                                    <button type="submit" class="btn btn-primary" style="float: right;" ng-click="editClick(service.Id)">Edit</button>
+                                    <button type="submit" class="btn btn-primary cancelAddButton" style="float: right; margin-top: 10px;" ng-confirm-click="Are you sure to delete this record ?" confirmed-click="delete(service.Id)">Delete</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+          
+        </div>
+</body>
+</html>

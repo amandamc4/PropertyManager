@@ -1,0 +1,159 @@
+﻿
+<html>
+<head>
+    <title>Service Request Add</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper-form" ng-hide="addOne">
+
+        <!--ADD FORM-->
+        <div ng-hide="isEdit">
+            <div class="form-style-5" ng-hide="showConfirmation">
+                <form name="form" id="form">
+                    <fieldset>
+                        <legend><span><i class="fa fa-paint-brush" aria-hidden="true"></i></span> Add Service Request<button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="service">Service*</label>
+                        <select ng-model="modelAdd.ServiceId" name="service" id="service" required>
+                            <option ng-repeat="service in services" value="{{service.Id}}">{{service.ServiceName}}</option>
+                        </select>
+                        <span class="spanError" ng-show="form.service.$invalid && !form.service.$pristine">Service is required</span>
+
+                        <label class="control-label" for="requestDate">Request Date</label>
+                        <div>
+                            <input style="float: left" type="text" class="text-date form-control" name="requestDate" id="requestDate" uib-datepicker-popup="MM/dd/yyyy" ng-model="modelAdd.RequestDate" is-open="popup1.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="form.requestDate.$invalid && !form.requestDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>
+
+                        <label class="control-label" for="completionDate">Completion Date</label>
+                        <div>
+                            <input style="float: left" type="text" class="text-date form-control" name="completionDate" id="completionDate" uib-datepicker-popup="MM/dd/yyyy" ng-model="modelAdd.CompletionDate" is-open="popup2.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="form.completionDate.$invalid && !form.completionDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>
+
+                        <label class="control-label" for="description">Description</label>
+                        <textarea id="description" name="description" ng-model="modelAdd.Description" rows="6" cols="20" style="overflow:auto;resize:none" maxlength="200" ng-pattern="/^[a-zA-Z0-9\\.!\\?\-\\/\\*\x22\\&\\$():%\\@+-= ]+$/"></textarea>
+                        <br /><span class="spanError" ng-show="form.description.$error.pattern && !form.description.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="notes">Notes</label>
+                        <textarea id="notes" name="notes" ng-model="modelAdd.Notes" rows="4" cols="15" style="overflow:auto;resize:none" maxlength="100" ng-pattern="/^[a-zA-Z0-9\\.!\\?\-\\/\\*\x22\\&\\$():%\\@+-= ]+$/"></textarea>
+                        <br /><span class="spanError" ng-show="form.notes.$error.pattern && !form.notes.$pristine">Enter valid characters</span>
+
+                    </fieldset>
+                    <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary submitForm" ng-click="addServiceRequest()">Add Service Request </button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Service:</div>
+                        <div class="detailDivTableCell">{{modelAdd.ServiceName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Request Date:</div>
+                        <div class="detailDivTableCell">{{modelAdd.RequestDate | date:'MM-dd-yyyy'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Completion Date:</div>
+                        <div class="detailDivTableCell">{{modelAdd.CompletionDate | date:'MM-dd-yyyy'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Description:</div>
+                        <div class="detailDivTableCell">{{modelAdd.Description}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Notes:</div>
+                        <div class="detailDivTableCell">{{modelAdd.Notes}}</div>
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                    <button type="button" class="btn btn-primary" ng-click="addAnother()">Add another</button>
+                </div>
+            </div>
+        </div>
+        <!--ADD FORM-->
+        <!--EDIT FORM-->
+        <div ng-show="isEdit">
+            <div class="form-style-5" ng-hide="showEditConfirmation">
+                <form name="formEdit" id="formEdit">
+                    <fieldset>
+                        <legend><span><i class="fa fa-paint-brush" aria-hidden="true"></i></span> Edit Service Request <button type="button" class="btn btn-primary cancelAddButton" ng-click="cancelAdd()">Cancel</button></legend>
+
+                        <label class="control-label" for="service">Service*</label>
+                        <input type="text" name="service" id="service" ng-model="modelEdit.ServiceName" class="form-control" readonly>
+                        <span class="spanError" ng-show="formEdit.service.$error.required || formEdit.service.$invalid && !formEdit.service.$pristine">Service is required</span>
+                        
+                        <label class="control-label" for="requestDate">Request Date</label>
+                        <div>
+                            <input style="float: left" type="text" class="text-date form-control" name="requestDate" id="requestDate" uib-datepicker-popup="MM/dd/yyyy" ng-model="modelEdit.RequestDate" is-open="popup1.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="formEdit.requestDate.$invalid && !formEdit.requestDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>
+
+                        <label class="control-label" for="completionDate">Completion Date</label>
+                        <div>
+                            <input style="float: left" type="text" class="text-date form-control" name="completionDate" id="completionDate" uib-datepicker-popup="MM/dd/yyyy" ng-model="modelEdit.CompletionDate" is-open="popup2.opened" close-text="Close" alt-input-formats="altInputFormats" placeholder="mm/dd/yyyy" />
+                            <span style="padding-left: 5px;" class="input-group-btn">
+                                <button style="height: 34px;" type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                            <span class="spanError" ng-show="formEdit.completionDate.$invalid && !formEdit.completionDate.$pristine">Enter a date in the format mm/dd/yyyy</span>
+                        </div>
+
+                        <label class="control-label" for="description">Description</label>
+                        <textarea id="description" name="description" ng-model="modelEdit.Description" rows="6" cols="20" style="overflow:auto;resize:none" maxlength="200" ng-pattern="/^[a-zA-Z0-9\\.!\\?\-\\/\\*\x22\\&\\$():%\\@+-= ]+$/"></textarea>
+                        <br /><span class="spanError" ng-show="formEdit.description.$error.pattern && !formEdit.description.$pristine">Enter valid characters</span>
+
+                        <label class="control-label" for="notes">Notes</label>
+                        <textarea id="notes" name="notes" ng-model="modelEdit.Notes" rows="4" cols="15" style="overflow:auto;resize:none" maxlength="100" ng-pattern="/^[a-zA-Z0-9\\.!\\?\-\\/\\*\x22\\&\\$():%\\@+-= ]+$/"></textarea>
+                        <br /><span class="spanError" ng-show="formEdit.notes.$error.pattern && !formEdit.notes.$pristine">Enter valid characters</span>
+                    </fieldset>
+                    <button type="submit" ng-disabled="formEdit.$invalid" class="btn btn-primary submitForm" ng-click="editServiceRequest()">Edit Service Request</button>
+                    <br /><span class="spanError" style="margin-top:20px;" ng-show="message!=''"><i class="fa fa-exclamation-circle" aria-hidden="true"></i>{{message}}</span>
+                </form>
+            </div>
+            <div class="detailDivTable addSuccessfull" style="float:left" ng-show="showEditConfirmation">
+                <div class="detailDivTableBody">
+                    <span class="messageSuccess">{{message}}</span>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Service:</div>
+                        <div class="detailDivTableCell">{{modelEdit.ServiceName}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Request Date:</div>
+                        <div class="detailDivTableCell">{{modelEdit.RequestDate | date:'MM-dd-yyyy'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Completion Date:</div>
+                        <div class="detailDivTableCell">{{modelEdit.CompletionDate | date:'MM-dd-yyyy'}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Description:</div>
+                        <div class="detailDivTableCell">{{modelEdit.Description}}</div>
+                    </div>
+                    <div class="detailDivTableRow">
+                        <div class="detailDivTableHeader">Notes:</div>
+                        <div class="detailDivTableCell">{{modelEdit.Notes}}</div>
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-click="goBack()">Back</button>
+                </div>
+            </div>
+        </div>
+        <!--EDIT FORM-->
+
+    </div>
+</body>
+</html>

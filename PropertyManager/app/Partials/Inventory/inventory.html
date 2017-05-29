@@ -1,0 +1,87 @@
+﻿
+<html>
+<head>
+    <title>Inventory</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body ng-app="propertyManagerApp">
+    <div ng-include='"/app/Partials/menu.html"'></div>
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header" style="margin-top: 0px;">Inventory</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <form>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                    <input type="text" class="form-control" placeholder="Search" ng-model="searchInventory">
+                </div>
+            </div>
+        </form>
+        <button type="submit" style="float:left; margin-bottom:20px" class="btn btn-primary" ng-click="addOneClick()">Add</button>
+        <table class="table-fill" style="float: left">
+            <thead>
+                <tr>
+                    <th style="width: 2%"></th>
+                    <th class="text-left"ng-click="sortType = 'productName'; sortReverse = !sortReverse">
+                        Product Name
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'productName' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'productName' && sortReverse"></i></span>
+                    </th>
+                    <th class="text-left" style="width: 20%" ng-click="sortType = 'supplier'; sortReverse = !sortReverse">
+                        Supplier
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'supplier' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'supplier' && sortReverse"></i></span>
+                    </th>
+                    <th class="text-left" style="width: 20%" ng-click="sortType = 'quantity'; sortReverse = !sortReverse">
+                        Quantity
+                        <span><i class="fa fa-caret-up" ng-show="sortType == 'quantity' && !sortReverse"></i></span>
+                        <span><i class="fa fa-caret-down" ng-show="sortType == 'quantity' && sortReverse"></i></span>
+                    </th>                   
+                </tr>
+            </thead>
+            <tbody class="list-tbody" ng-repeat="inventory in inventorys | orderBy:sortType:sortReverse | filter:searchInventory" ng-class-odd="'list-row-odd'" ng-class-even="'list-row-even'">
+                <tr class="list-hover">
+                    <td>
+                        <i style="cursor: pointer" class="fa fa-minus" ng-if="inventory.expanded" ng-click="inventory.expanded = false"></i>
+                        <i style="cursor: pointer" class="fa fa-plus" ng-if="!inventory.expanded" ng-click="inventory.expanded = true;"></i>
+                    </td>
+                    <td class="text-left">{{inventory.ProductName}}</td>
+                    <td class="text-left">{{inventory.Supplier}}</td>
+                    <td class="text-left">{{inventory.Quantity }}</td>
+                </tr>
+                <tr class="details-row" ng-if="inventory.expanded" ng-repeat-end="">
+                    <td colspan="4">
+                        <div class="detailDivTable">
+                            <div class="detailDivTableBody detailLeft">
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Product Name:</div>
+                                    <div class="detailDivTableCell">{{inventory.ProductName}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Supplier:</div>
+                                    <div class="detailDivTableCell">{{inventory.Supplier}}</div>
+                                </div>
+                                <div class="detailDivTableRow">
+                                    <div class="detailDivTableHeader">Quantity:</div>
+                                    <div class="detailDivTableCell">{{inventory.Quantity}}</div>
+                                </div>                              
+                            </div>
+                            <div class="detailRight">
+                                <button type="submit" class="btn btn-primary" style="float: right;" ng-click="editClick(inventory.Id)">Edit</button>
+                                <button type="submit" class="btn btn-primary cancelAddButton" style="float: right; margin-top: 10px;" ng-confirm-click="Are you sure to delete this record ?" confirmed-click="delete(inventory.Id)">Delete</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+
